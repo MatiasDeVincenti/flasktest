@@ -1,7 +1,7 @@
 import pytest
 from flask import g
 from flask import session
-
+from werkzeug.security import check_password_hash
 from flaskr.db import get_db
 
 
@@ -10,15 +10,14 @@ def test_register(client, app):
     assert client.get("/auth/register").status_code == 200
 
     # test that successful registration redirects to the login page
-    response = client.post("/auth/register", data={"username": "a", "password": "a"})
+    response = client.post("/auth/register", data={"username": "a", "password": "j"})
     assert response.headers["Location"] == "/auth/login"
 
     # test that the user was inserted into the database
     with app.app_context():
-        assert (
-            get_db().execute("SELECT * FROM user WHERE username = 'a'").fetchone()
-            is not None
-        )
+        usuario = get_db().execute("SELECT * FROM user WHERE username = 'a'").fetchone()
+        assert (usuario is not None)
+        assert(check_password_hash(usuario['password'], ("j")))
 
 
 @pytest.mark.parametrize(
