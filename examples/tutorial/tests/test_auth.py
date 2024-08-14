@@ -21,7 +21,7 @@ def test_register(client, app):
 
 
 @pytest.mark.parametrize(
-    ("username", "password", "message", "email"),
+    ("username", "password", "email", "message"),
     (
         ("", "", "Usuario requerido."),
         ("a", "", "Contraseña requerida."),
